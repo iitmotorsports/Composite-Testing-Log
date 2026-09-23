@@ -1,0 +1,39 @@
+
+#log-display-formatter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: fit-content;
+  height: fit-content;
+  gap: 10px;
+}
+
+#log-display-formatter > div {
+  background-color: grey;
+  padding: 4px;
+  border-radius: 5px;
+  flex: 1;
+  border: 2px solid gray;
+
+  transition: background-color 0.1s ease, border 0.1s ease, transform 0.1s ease;
+
+  & > p {
+    margin: 0;
+    text-align: center;
+  }
+
+  &:hover {
+    background-color: darkgrey;
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  &:active {
+    background-color: grey;
+    transform: scale(0.97);
+  }
+
+  &.selected {
+    background-color: var(--primary-color);
+    border: 2px solid var(--border-color);
+  }
+}
