@@ -10,11 +10,10 @@
 .card {
   background-color: var(--background-color);
   color: var(--font-color);
-  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
   box-shadow: 0 4px 12px var(--shadow-color);
-  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s ease, color 0.1s ease;
 
   flex-grow: 1;
   width: fit-content;
@@ -23,6 +22,7 @@
     transform: translateY(-4px);
     box-shadow: 0 6px 20px var(--shadow-color);
     background-color: var(--primary-color);
+    color: white;
     cursor: pointer;
   }
 
@@ -34,4 +34,11 @@
   & p {
     width: fit-content;
   }
+}
+
+.card h1 {
+  width: fit-content;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  margin-top: 5px;
 }

@@ -1,10 +1,13 @@
 :root {
-  --background-color: light-dark(#cccccc, #16171d);
-  --font-color: light-dark(#000000, #ffffff);
+  --background-color: light-dark(#f0f0f0, #231F20);
+  --font-color: light-dark(#231F20, #ffffff);
   --shadow-color: light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.4));
   --border-color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));
 
-  --primary-color: light-dark(#ff5b2e, #ad2500);
+  --primary-color: #CE1126;
+  --secondary-color: #6F7377;
+
+  --font: Futura Hv BT;
 
   color-scheme: light dark;
 }
@@ -18,9 +21,10 @@ html, body {
   display: grid;
   justify-content: center;
 
-  font-family: Arial, sans-serif;
+  font-family: var(--font), Arial, sans-serif;
+  overflow-x: hidden;
   
-  width: 100%;
+  width: 100vw;
   height: 100vh;
 }
 
@@ -30,7 +34,8 @@ html, body {
   gap: 20px;
 
   max-width: 1200px;
-  width: 100vw;
+  margin: 0px 20px;
+  width: calc(100vw - 40px);
 }
 
 .unselectable {

@@ -13,6 +13,7 @@
     grid-row: 1 / span 1;
 
     background-color: var(--primary-color);
+    color: white;
 
     & .header-cell {
       grid-column: var(--col, 1) / span 1;
@@ -42,7 +43,7 @@
 
       box-shadow: 0 2px 6px var(--shadow-color);
 
-      transition: transform 0.1s ease, background-color 0.1s ease, box-shadow 0.1s ease;
+      transition: transform 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
 
       & div {
         grid-column: var(--col, 1) / span 1;
@@ -58,6 +59,7 @@
       &:hover {
         cursor: pointer;
         background-color: var(--primary-color);
+        color: white;
         transform: translateY(-2px);
         box-shadow: 0 4px 20px var(--shadow-color);
       }
