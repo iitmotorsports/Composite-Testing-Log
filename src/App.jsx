@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import CardLayout from './assets/CardLayout';
 import TableLayout from './assets/TableLayout';
+import InfoPage from './assets/InfoPage';
+import SubmitForm from './assets/SubmitForm';
 
 import './App.css';
 
@@ -44,7 +46,9 @@ function createPlaceholderEntry() {
 
 function App() {
   const displayFormatter = useRef(null);
-  let [selectedFormat, setSelectedFormat] = useState('card');
+  const [selectedFormat, setSelectedFormat] = useState('card');
+  const [selectedId, setSelectedId] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
     if (!displayFormatter.current) return;
@@ -65,30 +69,43 @@ function App() {
     createPlaceholderEntry(),
   ];
 
+  const overlayDisplay = selectedId !== null || isFormOpen ? 'flex' : 'none';
+  const overlayClick = () => {
+    setSelectedId(null);
+    setIsFormOpen(false);
+  };
+  const stopPropagation = (e) => { e.stopPropagation(); };
+
   return (
     <div className="app-content">
-      <h1>Composite Testing Log</h1>
-      <div className="submission-section">
-        (submission WIP)
+      <div className="overlay-container" style={{ display: overlayDisplay }} onClick={overlayClick}>
+        <div onClick={stopPropagation}>
+          { selectedId !== null && <InfoPage selectedId={selectedId} setSelectedId={setSelectedId} /> }
+          { isFormOpen && <SubmitForm setIsFormOpen={setIsFormOpen} /> }
+        </div>
       </div>
-      <div className="search-section">
+      <h1>Composite Testing Log</h1>
+      <div className="submission-btn">
+        <button onClick={() => setIsFormOpen(true)}>Submit New Entry</button>
+      </div>
+      <div className="search-bar">
         (search WIP)
       </div>
       <div className="log-container">
         <div id="log-display-formatter" className="unselectable" ref={displayFormatter}>
-          <div id="card" className={selectedFormat === 'card' ? 'selected' : ''}>
-            <p>Card</p>
-          </div>
-          <div id="table" className={selectedFormat === 'table' ? 'selected' : ''}>
-            <p>Table</p>
-          </div>
+          <button id="card" className={selectedFormat === 'card' ? 'selected' : ''}>
+            Card
+          </button>
+          <button id="table" className={selectedFormat === 'table' ? 'selected' : ''}>
+            Table
+          </button>
         </div>
         <div className="log-section">
           <div className="table-layout-container" style={{ display: selectedFormat === 'table' ? 'block' : 'none' }}>
-            <TableLayout data={data} />
+            <TableLayout data={data} setSelectedId={setSelectedId} />
           </div>
           <div className="card-layout-container" style={{ display: selectedFormat === 'card' ? 'block' : 'none' }}>
-            <CardLayout data={data} />
+            <CardLayout data={data} setSelectedId={setSelectedId} />
           </div>
         </div>
       </div>

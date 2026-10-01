@@ -1,6 +1,7 @@
 import './TableLayout.css';
 
-function TableLayout({ data }) {
+function TableLayout({ data, setSelectedId }) {
+  const onRowClick = (index) => setSelectedId(index);
   return (
     <div className="table-layout">
         <div id="header">
@@ -18,7 +19,7 @@ function TableLayout({ data }) {
         </div>
         <div id="body">
             {data.map((entry, index) => (
-                <div className="row" key={index}>
+                <div className="row" key={index} onClick={() => onRowClick(index)}>
                     <div style={{ "--col": 1 }}>
                     <p>{entry.test_num}</p>
                     </div>
