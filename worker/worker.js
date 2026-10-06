@@ -4,11 +4,12 @@
 //   public/tests/manifest.json            (manifest, created if missing, updated otherwise)
 //   public/tests/pics/test<N>/<n>-<filename>
 //
-// Setup:
-//   1. Fine-grained GitHub token, resource owner iitmotorsports, ONLY this repo,
-//      permissions: Contents (read/write), Pull requests (read/write)
-//   2. wrangler secret put GITHUB_TOKEN
-//   3. wrangler deploy
+// Setup (all in the Cloudflare dashboard, no wrangler needed):
+//   1. Create a fine-grained GitHub token, resource owner iitmotorsports,
+//      ONLY this repo, permissions: Contents (read/write), Pull requests (read/write)
+//   2. Workers & Pages -> your worker -> Settings -> Variables and Secrets ->
+//      Add a variable named GITHUB_TOKEN, type "Secret", value = the token
+//   3. Edit code -> paste this whole file -> Deploy
 
 const CONFIG = {
   owner: "iitmotorsports",
@@ -69,9 +70,10 @@ const cell = (v) =>
   String(v).replace(/\|/g, "\\|").replace(/\r?\n/g, " ");
 
 function buildCommentTable(record) {
+  const units = record.props_units || {};
   const propsCell = Object.keys(record.props).length
     ? Object.entries(record.props)
-        .map(([k, v]) => `${cell(k)}: ${cell(v)}`)
+        .map(([k, v]) => `${cell(k)}: ${cell(v)}${units[k] ? " " + cell(units[k]) : ""}`)
         .join("<br>")
     : "—";
 
@@ -132,6 +134,23 @@ function buildRecord(raw, pictures) {
     }
   }
 
+  // props_units: object of prop name -> unit string (optional per prop)
+  const props_units = {};
+  if (raw.props_units != null) {
+    if (typeof raw.props_units !== "object" || Array.isArray(raw.props_units)) {
+      throw new ValidationError("props_units must be an object");
+    }
+    const unitEntries = Object.entries(raw.props_units);
+    if (unitEntries.length > 40) throw new ValidationError("Too many props_units");
+    for (const [k, v] of unitEntries) {
+      const key = str(k, "unit name", 60);
+      if (!(key in props)) {
+        throw new ValidationError(`Unit given for unknown property "${key}"`);
+      }
+      props_units[key] = str(v, `unit for "${key}"`, 30);
+    }
+  }
+
   // layup: ordered list of strings
   if (!Array.isArray(raw.layup) || raw.layup.length === 0 || raw.layup.length > 60) {
     throw new ValidationError("layup must be a non-empty list");
@@ -148,6 +167,7 @@ function buildRecord(raw, pictures) {
     material: str(raw.material, "material"),
     test_type: str(raw.test_type, "test_type", 60),
     props,
+    props_units,
     resin_type: str(raw.resin_type, "resin_type"),
     resin_matrix: str(raw.resin_matrix, "resin_matrix", 60),
     mfg_method: str(raw.mfg_method, "mfg_method"),
