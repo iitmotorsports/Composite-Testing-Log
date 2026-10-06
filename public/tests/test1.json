@@ -1,0 +1,17 @@
+{
+  "test_num": 1,
+  "date": "2026-06-12",
+  "material": "CF",
+  "test_type": "Flexural (3-point)",
+  "props": {
+    "stren": 500
+  },
+  "resin_type": "Thermo",
+  "resin_matrix": "Epoxy",
+  "mfg_method": "vacuum",
+  "layup": [
+    "0/90"
+  ],
+  "pictures": [],
+  "coretype": "Honeycomb (Aluminum)"
+}
