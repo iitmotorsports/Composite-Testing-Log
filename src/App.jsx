@@ -67,6 +67,13 @@ function App() {
     createPlaceholderEntry(),
     createPlaceholderEntry(),
     createPlaceholderEntry(),
+    createPlaceholderEntry(),
+    createPlaceholderEntry(),
+    createPlaceholderEntry(),
+    createPlaceholderEntry(),
+    createPlaceholderEntry(),
+    createPlaceholderEntry(),
+    createPlaceholderEntry(),
   ];
 
   const overlayDisplay = selectedId !== null || isFormOpen ? 'flex' : 'none';
