@@ -1,0 +1,17 @@
+{
+  "test_num": 1,
+  "date": "2000-06-12",
+  "material": "CF",
+  "test_type": "Flexural (3-point)",
+  "props": {
+    "flex": 412
+  },
+  "resin_type": "Theromosmth",
+  "resin_matrix": "Epoxy",
+  "mfg_method": "Vacuum Bag",
+  "layup": [
+    "0/90 carbon twill"
+  ],
+  "pictures": [],
+  "coretype": "Honeycomb (Aluminum)"
+}
