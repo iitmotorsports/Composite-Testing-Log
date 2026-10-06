@@ -118,15 +118,18 @@ useEffect(() => {
   return (
     <div className="app-content">
       <div className="overlay-container" style={{ display: overlayDisplay }} onClick={overlayClick}>
-        <div onClick={stopPropagation}>
+        <div className="overlay-contents" onClick={stopPropagation}>
           { selectedId !== null && <InfoPage data={data} selectedId={selectedId} /> }
           { isFormOpen && <SubmitForm setIsFormOpen={setIsFormOpen} /> }
         </div>
       </div>
+    <header className="top-bar">
       <h1>Composite Testing Log</h1>
-      <div className="submission-btn">
-        <button onClick={() => setIsFormOpen(true)}>Submit New Entry</button>
-      </div>
+        <div className="submission-btn">
+          <button onClick={() => setIsFormOpen(true)}>Submit New Entry</button>
+        </div>
+    </header>
+    <main className="page-content">
       <div className="search-bar">
         (search WIP)
       </div>
@@ -148,6 +151,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
+    </main> 
     </div>
   )
 }

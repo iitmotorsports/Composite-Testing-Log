@@ -1,11 +1,5 @@
 import './InfoPage.css';
 
-// Units for entry.props keys. Add new properties here as you log them.
-// Anything not listed is shown without a unit.
-const PROP_UNITS = {
-  'Flexural Strength': 'psi',
-};
-
 // Turn "0/90 Carbon Twill" into a crosshatch of fiber directions for the ply swatch.
 function plyBackground(ply) {
   const match = /(-?\d+)\s*\/\s*(-?\d+)/.exec(ply);
@@ -47,6 +41,7 @@ function InfoPage({ data, selectedId }) {
     material,
     test_type,
     props,
+    props_units,
     resin_type,
     resin_matrix,
     mfg_method,
@@ -77,7 +72,7 @@ function InfoPage({ data, selectedId }) {
               <span className="info-result-name">{name}</span>
               <span className="info-result-value">
                 {formatValue(value)}
-                {PROP_UNITS[name] && <span className="info-result-unit"> {PROP_UNITS[name]}</span>}
+                {props_units?.[name] && <span className="info-result-unit"> {props_units[name]}</span>}
               </span>
             </div>
           ))}
