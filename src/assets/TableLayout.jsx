@@ -1,57 +1,87 @@
 import './TableLayout.css';
 
-function TableLayout({ data, setSelectedId }) {
-  const onRowClick = (index) => setSelectedId(index);
+const COLUMNS = [
+  'Test Number',
+  'Date',
+  'Material',
+  'Test Type',
+  'Props',
+  'Resin Type',
+  'Resin Matrix',
+  'Manufacturing Method',
+  'Layup',
+  'Core Type',
+];
+
+const Empty = () => <span className="tl-empty">—</span>;
+
+function Text({ value }) {
+  return value ? <span>{value}</span> : <Empty />;
+}
+
+function Props({ value }) {
+  const entries = value && typeof value === 'object' ? Object.entries(value) : [];
+  if (!entries.length) return <Empty />;
+  return entries.map(([key, val]) => (
+    <span className="tl-chip" key={key}>
+      <span className="tl-chip-key">{key}</span>
+      <span>{String(val)}</span>
+    </span>
+  ));
+}
+
+function Layup({ value }) {
+  if (!value?.length) return <Empty />;
+  return value.map((ply, i) => (
+    <span className="tl-chip tl-chip-ply" key={i}>{ply}</span>
+  ));
+}
+
+// selectedId is optional: pass it to highlight the active row.
+function TableLayout({ data, setSelectedId, selectedId }) {
+  const select = (index) => setSelectedId(index);
+
   return (
-    <div className="table-layout">
-        <div id="header">
-            <p className="header-cell" style={{ "--col": 1 }}><strong>Test Number</strong></p>
-            <p className="header-cell" style={{ "--col": 2 }}><strong>Date</strong></p>
-            <p className="header-cell" style={{ "--col": 3 }}><strong>Material</strong></p>
-            <p className="header-cell" style={{ "--col": 4 }}><strong>Test Type</strong></p>
-            <p className="header-cell" style={{ "--col": 5 }}><strong>Props</strong></p>
-            <p className="header-cell" style={{ "--col": 6 }}><strong>Resin Type</strong></p>
-            <p className="header-cell" style={{ "--col": 7 }}><strong>Resin Matrix</strong></p>
-            <p className="header-cell" style={{ "--col": 8 }}><strong>Manufacturing Method</strong></p>
-            <p className="header-cell" style={{ "--col": 9 }}><strong>Layup</strong></p>
-            <p className="header-cell" style={{ "--col": 10 }}><strong>Core Type</strong></p>
-        </div>
-        <div id="body">
-            {data.map((entry, index) => (
-                <div className="row" key={index} onClick={() => onRowClick(index)}>
-                    <div style={{ "--col": 1 }}>
-                    <p>{entry.test_num}</p>
-                    </div>
-                    <div style={{ "--col": 2 }}>
-                    <p>{entry.date.toLocaleDateString('en-CA')}</p>
-                    </div>
-                    <div style={{ "--col": 3 }}>
-                    <p>{entry.material}</p>
-                    </div>
-                    <div style={{ "--col": 4 }}>
-                    <p>{entry.test_type}</p>
-                    </div>
-                    <div style={{ "--col": 5 }}>
-                    <p>{JSON.stringify(entry.props)}</p>
-                    </div>
-                    <div style={{ "--col": 6 }}>
-                    <p>{entry.resin_type}</p>
-                    </div>
-                    <div style={{ "--col": 7 }}>
-                    <p>{entry.resin_matrix}</p>
-                    </div>
-                    <div style={{ "--col": 8 }}>
-                    <p>{entry.mfg_method}</p>
-                    </div>
-                    <div style={{ "--col": 9 }}>
-                    <p>{entry.layup.join(', ')}</p>
-                    </div>
-                    <div style={{ "--col": 10 }}>
-                    <p>{entry.coretype}</p>
-                    </div>
-                </div>
-            ))}
-        </div>
+    <div className="table-layout" role="table" aria-label="Test results">
+      <div className="tl-head" role="row">
+        {COLUMNS.map((label) => (
+          <div className="tl-head-cell" role="columnheader" key={label}>
+            {label}
+          </div>
+        ))}
+      </div>
+
+      <div className="tl-body" role="rowgroup">
+        {data.map((entry, index) => (
+          <div
+            className="tl-row"
+            role="row"
+            key={index}
+            tabIndex={0}
+            aria-selected={selectedId === index}
+            onClick={() => select(index)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                select(index);
+              }
+            }}
+          >
+            <div className="tl-cell tl-num" role="cell">{entry.test_num}</div>
+            <div className="tl-cell tl-date" role="cell">
+              {entry.date.toLocaleDateString('en-CA')}
+            </div>
+            <div className="tl-cell" role="cell"><Text value={entry.material} /></div>
+            <div className="tl-cell" role="cell"><Text value={entry.test_type} /></div>
+            <div className="tl-cell" role="cell"><Props value={entry.props} /></div>
+            <div className="tl-cell" role="cell"><Text value={entry.resin_type} /></div>
+            <div className="tl-cell" role="cell"><Text value={entry.resin_matrix} /></div>
+            <div className="tl-cell" role="cell"><Text value={entry.mfg_method} /></div>
+            <div className="tl-cell" role="cell"><Layup value={entry.layup} /></div>
+            <div className="tl-cell" role="cell"><Text value={entry.coretype} /></div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

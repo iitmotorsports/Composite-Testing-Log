@@ -61,14 +61,27 @@
   z-index: 1000;
 }
 
-.submission-btn {
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
-  justify-content: left;
   align-items: center;
-  margin: 20px 0;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  color: #fff;
+  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); */
 }
 
-.submission-btn button {
+.top-bar h1 {
+  margin: 0;
+  padding: 1rem 0;
+  font-size: 1.5rem;
+}
+
+
+.top-bar button {
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -86,3 +99,25 @@
     filter: brightness(0.9);
   }
 }
+
+.overlay-contents {
+    display: contents;
+}
+
+.log-container {
+  max-width: 1200px;
+  margin: 0px 20px;
+  width: calc(100vw - 40px);
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto 0;
+  padding: 0 20px;
+  }

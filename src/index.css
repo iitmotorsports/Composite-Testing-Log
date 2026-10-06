@@ -1,8 +1,9 @@
 :root {
-  --background-color: light-dark(#f0f0f0, #231F20);
+  --background-color: light-dark(#f0f0f0, #0a0a0a);
+  --bg-2: light-dark(#fafafa, #111111);
   --font-color: light-dark(#231F20, #ffffff);
   --shadow-color: light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.4));
-  --border-color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));
+  --border-color: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.1));
 
   --primary-color: #CE1126;
   --secondary-color: #6F7377;
@@ -24,18 +25,19 @@ html, body {
   font-family: var(--font), Arial, sans-serif;
   overflow-x: hidden;
   
-  width: 100vw;
+  width: 100%;
+  min-height: 100vh;
   height: 100vh;
 }
 
 #root {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  /* gap: 20px; */
 
-  max-width: 1200px;
-  margin: 0px 20px;
-  width: calc(100vw - 40px);
+  /* max-width: 1200px; */
+  /* margin: 0px 20px; */
+  width: 100vw;
 }
 
 .unselectable {

@@ -37,7 +37,7 @@ const initialState = {
   resin_matrix: emptyEnum,
   coretype: emptyEnum,
   layup: [''],
-  props: [{ key: '', value: '' }],
+  props: [{ key: '', value: '', unit: '' }],
 };
 
 const resolveEnum = ({ choice, custom }) => (choice === OTHER ? custom.trim() : choice);
@@ -104,10 +104,12 @@ function SubmitForm({ setIsFormOpen, extraOptions = {} }) {
   // props helpers
   const setProp = (i, field, v) =>
     setF((p) => ({ ...p, props: p.props.map((r, j) => (j === i ? { ...r, [field]: v } : r)) }));
-  const addProp = () => setF((p) => ({ ...p, props: [...p.props, { key: '', value: '' }] }));
+  const addProp = () => setF((p) => ({ ...p, props: [...p.props, { key: '', value: '', unit: '' }] }));
   const removeProp = (i) =>
-    setF((p) => ({ ...p, props: p.props.length > 1 ? p.props.filter((_, j) => j !== i) : [{ key: '', value: '' }] }));
-
+    setF((p) => ({
+      ...p,
+      props: p.props.length > 1 ? p.props.filter((_, j) => j !== i) : [{ key: '', value: '', unit: '' }],
+    }));
   async function handleSubmit(e) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -116,11 +118,14 @@ function SubmitForm({ setIsFormOpen, extraOptions = {} }) {
 
     // props rows -> object (numeric-looking values become numbers)
     const props = {};
-    for (const { key, value } of f.props) {
+    const props_units = {};
+    for (const { key, value, unit } of f.props) {
       const k = key.trim();
       const v = value.trim();
       if (!k || v === '') continue;
       props[k] = !isNaN(Number(v)) ? Number(v) : v;
+      const u = unit.trim();
+      if (u) props_units[k] = u;
     }
 
     const data = {
@@ -129,6 +134,7 @@ function SubmitForm({ setIsFormOpen, extraOptions = {} }) {
       material: f.material.trim(),
       test_type: resolveEnum(f.test_type),
       props,
+      props_units,
       resin_type: f.resin_type.trim(),
       resin_matrix: resolveEnum(f.resin_matrix),
       mfg_method: f.mfg_method.trim(),
@@ -256,6 +262,13 @@ function SubmitForm({ setIsFormOpen, extraOptions = {} }) {
                 onChange={(e) => setProp(i, 'value', e.target.value)}
                 aria-label={`Property ${i + 1} value`}
               />
+            <input
+                    className="sf-unit"
+                    value={row.unit}
+                    placeholder="Unit"
+                    onChange={(e) => setProp(i, 'unit', e.target.value)}
+                    aria-label={`Property ${i + 1} unit`}
+                  />
               <button type="button" className="sf-icon-btn" onClick={() => removeProp(i)} aria-label={`Remove property ${i + 1}`}>
                 ✕
               </button>

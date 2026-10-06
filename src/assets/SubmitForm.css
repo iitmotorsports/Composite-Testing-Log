@@ -1,6 +1,6 @@
 /* ---------- Container (your original rules, kept as-is) ---------- */
 .submit-form {
-    background-color: var(--background-color);
+    background-color: var(--bg-2);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -306,4 +306,8 @@
     .submit-form .sf-add-btn {
         width: auto;
     }
+}
+
+.submit-form .sf-row .sf-unit {
+    flex: 0 0 5.5em;
 }
