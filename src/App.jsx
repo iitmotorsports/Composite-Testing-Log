@@ -7,6 +7,37 @@ import SubmitForm from './assets/SubmitForm';
 
 import './App.css';
 
+const BASE = import.meta.env.BASE_URL;
+
+function parseDate(str) {
+  const [y, m, d] = String(str).split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`Could not load ${url} (${res.status})`);
+  return res.json();
+}
+
+async function loadTests() {
+  const files = await fetchJson(`${BASE}tests/manifest.json`);
+
+  const entries = await Promise.all(
+    files.map(async (file) => {
+      const entry = await fetchJson(`${BASE}tests/${file}`);
+      return {
+        ...entry,
+        date: parseDate(entry.date),
+        // stored as "tests/pics/test1/1-photo.png"; turn into a URL the <img> can use
+        pictures: (entry.pictures ?? []).map((p) => `${BASE}${p}`),
+      };
+    })
+  );
+
+  return entries.sort((a, b) => a.test_num - b.test_num);
+}
+
 function createPlaceholderEntry() {
   /* 
   {
@@ -50,6 +81,10 @@ function App() {
   const [selectedId, setSelectedId] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     if (!displayFormatter.current) return;
 
@@ -62,19 +97,23 @@ function App() {
     }
   }, [displayFormatter]);
 
-  const data = [
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-    createPlaceholderEntry(),
-  ];
+  // const data = [
+  //   createPlaceholderEntry(),
+  //   createPlaceholderEntry(),
+  //   createPlaceholderEntry(),
+  //   createPlaceholderEntry(),
+  // ];
+
+useEffect(() => {
+    let cancelled = false;
+
+    loadTests()
+      .then((entries) => { if (!cancelled) setData(entries); })
+      .catch((err) => { if (!cancelled) setError(err.message); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
+  }, []);
 
   const overlayDisplay = selectedId !== null || isFormOpen ? 'flex' : 'none';
   const overlayClick = () => {

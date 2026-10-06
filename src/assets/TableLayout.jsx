@@ -14,8 +14,7 @@ function TableLayout({ data, setSelectedId }) {
             <p className="header-cell" style={{ "--col": 7 }}><strong>Resin Matrix</strong></p>
             <p className="header-cell" style={{ "--col": 8 }}><strong>Manufacturing Method</strong></p>
             <p className="header-cell" style={{ "--col": 9 }}><strong>Layup</strong></p>
-            <p className="header-cell" style={{ "--col": 10 }}><strong>Pictures</strong></p>
-            <p className="header-cell" style={{ "--col": 11 }}><strong>Core Type</strong></p>
+            <p className="header-cell" style={{ "--col": 10 }}><strong>Core Type</strong></p>
         </div>
         <div id="body">
             {data.map((entry, index) => (
@@ -24,7 +23,7 @@ function TableLayout({ data, setSelectedId }) {
                     <p>{entry.test_num}</p>
                     </div>
                     <div style={{ "--col": 2 }}>
-                    <p>{entry.date.toString()}</p>
+                    <p>{entry.date.toLocaleDateString('en-CA')}</p>
                     </div>
                     <div style={{ "--col": 3 }}>
                     <p>{entry.material}</p>
@@ -48,9 +47,6 @@ function TableLayout({ data, setSelectedId }) {
                     <p>{entry.layup.join(', ')}</p>
                     </div>
                     <div style={{ "--col": 10 }}>
-                    <p>{entry.pictures.join(', ')}</p>
-                    </div>
-                    <div style={{ "--col": 11 }}>
                     <p>{entry.coretype}</p>
                     </div>
                 </div>
