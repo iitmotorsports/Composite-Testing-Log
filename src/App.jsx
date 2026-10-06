@@ -97,13 +97,6 @@ function App() {
     }
   }, [displayFormatter]);
 
-  // const data = [
-  //   createPlaceholderEntry(),
-  //   createPlaceholderEntry(),
-  //   createPlaceholderEntry(),
-  //   createPlaceholderEntry(),
-  // ];
-
 useEffect(() => {
     let cancelled = false;
 
@@ -126,7 +119,7 @@ useEffect(() => {
     <div className="app-content">
       <div className="overlay-container" style={{ display: overlayDisplay }} onClick={overlayClick}>
         <div onClick={stopPropagation}>
-          { selectedId !== null && <InfoPage selectedId={selectedId} setSelectedId={setSelectedId} /> }
+          { selectedId !== null && <InfoPage data={data} selectedId={selectedId} /> }
           { isFormOpen && <SubmitForm setIsFormOpen={setIsFormOpen} /> }
         </div>
       </div>

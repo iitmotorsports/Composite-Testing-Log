@@ -1,72 +1,201 @@
-
+/* ---------- Container ---------- */
 .table-layout {
-  width: calc(100% - 20px);
-  padding: 10px;
+    /* Local tokens: same pattern and site variables as .submit-form */
+    --tl-accent: var(--primary-color, #2563eb);
+    --tl-accent-contrast: var(--primary-contrast, #ffffff);
+    --tl-border: var(--border-color, color-mix(in srgb, currentColor 25%, transparent));
+    --tl-border-strong: color-mix(in srgb, currentColor 45%, transparent);
+    --tl-field-bg: color-mix(in srgb, currentColor 5%, transparent);
+    --tl-hover-bg: color-mix(in srgb, var(--tl-accent) 12%, transparent);
+    --tl-radius: 6px;
 
-  display: grid;
-  overflow-x: auto;
+    display: grid;
+    grid-template-columns:
+        minmax(64px, 0.7fr)   /* test number */
+        minmax(100px, 1fr)    /* date */
+        minmax(80px, 1fr)     /* material */
+        minmax(80px, 1fr)     /* test type */
+        minmax(190px, 2.4fr)  /* props */
+        minmax(80px, 1fr)     /* resin type */
+        minmax(80px, 1fr)     /* resin matrix */
+        minmax(90px, 1.2fr)   /* mfg method */
+        minmax(130px, 1.4fr)  /* layup */
+        minmax(70px, 0.9fr);  /* core type */
 
-  & #header {
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 100%;
+    overflow: auto;
+
+    background-color: var(--bg-2);
+    border: 1px solid var(--tl-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+    line-height: 1.35;
+}
+
+.table-layout .tl-head,
+.table-layout .tl-body,
+.table-layout .tl-row {
     display: grid;
     grid-template-columns: subgrid;
-    grid-column: 1 / span 10;
-    grid-row: 1 / span 1;
+    grid-column: 1 / -1;
+}
 
-    background-color: var(--primary-color);
-    color: white;
+/* ---------- Header ---------- */
+.table-layout .tl-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    color: var(--tl-accent-contrast);
+    background-color: var(--tl-accent);
+}
 
-    & .header-cell {
-      grid-column: var(--col, 1) / span 1;
-      grid-row: 1 / span 1;
+.table-layout .tl-head-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
 
-      min-width: fit-content;
-      margin: 0;
-      padding: 4px 6px;
+/* ---------- Rows ---------- */
+.table-layout .tl-row {
+    position: relative;
+    cursor: pointer;
+    border-bottom: 1px solid var(--tl-border);
+    transition: background-color 0.15s ease;
+}
 
-      border: 1px solid var(--border-color);
+.table-layout .tl-row:last-child {
+    border-bottom: 0;
+}
+
+.table-layout .tl-row:nth-child(even) {
+    background-color: var(--tl-field-bg);
+}
+
+.table-layout .tl-row:hover,
+.table-layout .tl-row[aria-selected='true'] {
+    background-color: var(--tl-hover-bg);
+}
+
+.table-layout .tl-row:active {
+    background-color: color-mix(in srgb, var(--tl-accent) 20%, transparent);
+}
+
+/* Accent bar marks hovered / selected / focused row */
+.table-layout .tl-row::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background-color: var(--tl-accent);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.table-layout .tl-row:hover::before,
+.table-layout .tl-row:focus-visible::before,
+.table-layout .tl-row[aria-selected='true']::before {
+    opacity: 1;
+}
+
+/* Same focus ring as the form controls */
+.table-layout .tl-row:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--tl-accent) 30%, transparent);
+}
+
+/* ---------- Cells ---------- */
+.table-layout .tl-cell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    padding: 10px 8px;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.table-layout .tl-num,
+.table-layout .tl-date {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.table-layout .tl-num {
+    font-weight: 600;
+}
+
+.table-layout .tl-date {
+    opacity: 0.7;
+}
+
+.table-layout .tl-empty {
+    opacity: 0.4;
+}
+
+/* ---------- Chips (props + layup) ---------- */
+.table-layout .tl-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 2px 8px;
+    font-size: 0.78rem;
+    white-space: normal;
+    overflow-wrap: normal;
+    background-color: var(--tl-field-bg);
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius);
+}
+
+.table-layout .tl-chip-key {
+    opacity: 0.65;
+    overflow-wrap: normal; /* wrap between words only */
+}
+
+/* value never splits across lines */
+.table-layout .tl-chip-key + span {
+    flex: none;
+    white-space: nowrap;
+}
+
+.table-layout .tl-chip-ply {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 480px) {
+    .table-layout {
+        border-radius: 0;
+        font-size: 0.85rem;
     }
-  }
 
-  & #body {
-    display: grid;
-    grid-column: 1 / span 10;
-    grid-template-columns: subgrid;
-
-    & .row {
-      display: grid;
-      grid-template-columns: subgrid;
-      grid-column: 1 / span 10;
-      grid-row: auto / span 1;
-
-      border-bottom: 1px solid var(--border-color);
-      margin-top: 6px;
-
-      box-shadow: 0 2px 6px var(--shadow-color);
-
-      transition: transform 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
-
-      & div {
-        grid-column: var(--col, 1) / span 1;
-        grid-row: 1 / span 1;
-
-        display: flex;
-        align-items: center;
-        padding: 0 6px;
-        
-        border: 1px solid var(--border-color);
-      }
-
-      &:hover {
-        cursor: pointer;
-        background-color: var(--primary-color);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px var(--shadow-color);
-      }
-      &:active {
-        transform: translateY(2px);
-        box-shadow: 0 2px 4px var(--shadow-color);
-      }
+    .table-layout .tl-cell,
+    .table-layout .tl-head-cell {
+        padding: 8px 6px;
     }
-  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .table-layout .tl-row,
+    .table-layout .tl-row::before {
+        transition: none;
+    }
+}
+
+/* ---------- Column dividers ---------- */
+.table-layout .tl-cell + .tl-cell {
+    border-left: 1px solid var(--tl-border);
+}
+
+.table-layout .tl-head-cell + .tl-head-cell {
+    border-left: 1px solid color-mix(in srgb, var(--tl-accent-contrast) 30%, transparent);
 }

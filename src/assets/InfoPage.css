@@ -1,7 +1,190 @@
-
+/* ---------- Container (matches .submit-form) ---------- */
 .info-page {
-    background-color: var(--background-color);
+    background-color: var(--bg-2);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    /* Same token approach as SubmitForm: read the site's variable if it
+       exists, otherwise fall back to a sensible default. */
+    --ip-accent: var(--primary-color, #2563eb);
+    --ip-border: color-mix(in srgb, currentColor 25%, transparent);
+    --ip-border-strong: color-mix(in srgb, currentColor 45%, transparent);
+    --ip-field-bg: color-mix(in srgb, currentColor 5%, transparent);
+    --ip-muted: color-mix(in srgb, currentColor 65%, transparent);
+    --ip-radius: 6px;
+}
+
+/* ---------- Header ---------- */
+.info-header h2 {
+    margin: 0 0 4px;
+    font-size: 1.4rem;
+    line-height: 1.2;
+}
+
+.info-subtitle {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ip-muted);
+}
+
+/* ---------- Results ---------- */
+.info-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    margin-top: 16px;
+    padding: 12px 14px;
+    background-color: var(--ip-field-bg);
+    border: 1px solid var(--ip-border);
+    border-left: 4px solid var(--ip-accent);
+    border-radius: var(--ip-radius);
+}
+
+.info-result {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.info-result-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.info-result-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.info-result-unit {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--ip-muted);
+}
+
+/* ---------- Sections (styled like .sf-group) ---------- */
+.info-section {
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid var(--ip-border);
+    border-radius: var(--ip-radius);
+}
+
+.info-section h3 {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ---------- Construction fields ---------- */
+.info-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+    margin: 0;
+}
+
+.info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.info-field dt {
+    font-size: 0.8rem;
+    color: var(--ip-muted);
+}
+
+.info-field dd {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ---------- Layup ---------- */
+.info-layup {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.info-ply {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+}
+
+.info-ply-swatch {
+    flex: none;
+    width: 4rem;
+    height: 1.5rem;
+    background-color: var(--ip-field-bg);
+    border: 1px solid var(--ip-border-strong);
+    border-radius: 4px;
+    /* fiber lines are drawn with currentColor by the component */
+    --fiber: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+/* ---------- Pictures ---------- */
+.info-pictures {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+}
+
+.info-pictures a {
+    display: block;
+    border-radius: var(--ip-radius);
+}
+
+.info-pictures a:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ip-accent) 30%, transparent);
+}
+
+.info-pictures img {
+    display: block;
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border: 1px solid var(--ip-border);
+    border-radius: var(--ip-radius);
+    transition: border-color 0.15s ease;
+}
+
+.info-pictures a:hover img {
+    border-color: var(--ip-accent);
+}
+
+/* ---------- Empty state ---------- */
+.info-empty {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ip-muted);
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 480px) {
+    .info-page {
+        padding: 16px;
+        border-radius: 0;
+        max-height: 100vh;
+    }
+
+    .info-fields {
+        grid-template-columns: 1fr;
+    }
 }

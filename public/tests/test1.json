@@ -1,0 +1,21 @@
+{
+  "test_num": 1,
+  "date": "2026-10-05",
+  "material": "Carbon Fiber",
+  "test_type": "Flexural (3-point)",
+  "props": {
+    "Flexural Strength": 100000
+  },
+  "resin_type": "Thermoset",
+  "resin_matrix": "Polyester",
+  "mfg_method": "Vacuum Infusion",
+  "layup": [
+    "0/90 Carbon Twill",
+    "0/45 Carbon Twill",
+    "0/90 Carbon Twill"
+  ],
+  "pictures": [
+    "tests/pics/test1/1-background.png"
+  ],
+  "coretype": "Foam (PET)"
+}
