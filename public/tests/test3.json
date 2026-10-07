@@ -1,0 +1,21 @@
+{
+  "test_num": 3,
+  "date": "2026-10-12",
+  "material": "Carbon Fiber",
+  "test_type": "Flexural (3-point)",
+  "props": {
+    "Load": 900
+  },
+  "props_units": {
+    "Load": "N"
+  },
+  "resin_type": "Thermoset",
+  "resin_matrix": "Polyester",
+  "mfg_method": "Vacuum Bag",
+  "layup": [
+    "0/90 carbon twill",
+    "0/90 carbon twill"
+  ],
+  "pictures": [],
+  "coretype": "Foam (PET)"
+}
