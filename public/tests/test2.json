@@ -1,0 +1,16 @@
+{
+  "test_num": 2,
+  "date": "2026-10-06",
+  "material": "Carbon Fiber",
+  "test_type": "Tensile",
+  "props": {},
+  "props_units": {},
+  "resin_type": "Thermoset",
+  "resin_matrix": "Epoxy",
+  "mfg_method": "Vacuum bag",
+  "layup": [
+    "0/90 carbon twill"
+  ],
+  "pictures": [],
+  "coretype": "Foam (PET)"
+}
