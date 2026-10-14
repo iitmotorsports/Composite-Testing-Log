@@ -25,7 +25,7 @@ function Field({ label, children }) {
   );
 }
 
-function InfoPage({ data, selectedId }) {
+function InfoPage({ data, selectedId, closeOverlay }) {
   const entry = data[selectedId];
   if (!entry) {
     return (
@@ -56,13 +56,18 @@ function InfoPage({ data, selectedId }) {
   return (
     <div className="info-page">
       <header className="info-header">
-        <h2>
-          Test {test_num}: {material}
-        </h2>
-        <p className="info-subtitle">
-          {test_type}
-          {date && <span className="info-date"> on {formatDate(date)}</span>}
-        </p>
+        <div className="info-header-content">
+          <h2>
+            Test {test_num}: {material}
+          </h2>
+          <p className="info-subtitle">
+            {test_type}
+            {date && <span className="info-date"> on {formatDate(date)}</span>}
+          </p>
+        </div>
+        <button type="button" className="ip-close-btn" onClick={() => { closeOverlay(); }} aria-label={`Close Info Section`}>
+          ✕
+        </button>
       </header>
 
       {propEntries.length > 0 && (

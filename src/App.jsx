@@ -26,6 +26,9 @@ async function loadTests() {
   const entries = await Promise.all(
     files.map(async (file) => {
       const entry = await fetchJson(`${BASE}tests/${file}`);
+      ADVANCED_SEARCH_DATATYPES.test_type.values.add(entry.test_type ?? 'Any');
+      ADVANCED_SEARCH_DATATYPES.resin_matrix.values.add(entry.resin_matrix ?? 'Any');
+      ADVANCED_SEARCH_DATATYPES.core_type.values.add(entry.coretype ?? 'Any');
       return {
         ...entry,
         date: parseDate(entry.date),
@@ -76,14 +79,15 @@ function createPlaceholderEntry() {
 }
 
 const ADVANCED_SEARCH_DATATYPES = {
-  test_num: {name: 'Test Number', type: 'number', placeholder: 'Enter test number'},
+  test_num: {name: 'Test Number', type: ['number', 'number'], placeholder: ['Min', 'Max']},
   material: {name: 'Material', type: 'text', placeholder: 'Enter material'},
-  date: {name: 'Date', type: 'date', placeholder: 'Enter date'},
-  test_type: {name: 'Test Type', type: ['Any', 'Tension', 'Compression', 'Shear', 'Bending'], placeholder: 'Select test type'},
+  date: {name: 'Date', type: ['date', 'date'], placeholder: ['Select start date', 'Select end date']},
+  test_type: {name: 'Test Type', type: 'select', values: new Set(['Any']), placeholder: 'Select test type'},
   resin_type: {name: 'Resin Type', type: 'text', placeholder: 'Enter resin type'},
+  resin_matrix: {name: 'Resin Matrix', type: 'select', values: new Set(['Any']), placeholder: 'Select resin matrix'},
   mfg_method: {name: 'Manufacturing Method', type: 'text', placeholder: 'Enter manufacturing method'},
-  layup: {name: 'Layup', type: 'text', placeholder: 'Enter layup'},
-  core_type: {name: 'Core Type', type: 'text', placeholder: 'Enter core type'},
+  layup: {name: 'Layup', type: ['text'], placeholder: 'Enter layup', canAddEntries: true},
+  core_type: {name: 'Core Type', type: 'select', values: new Set(['Any']), placeholder: 'Enter core type'},
 }
 
 function App() {
@@ -94,13 +98,14 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
   const [advancedSearch, setAdvancedSearch] = useState({
-    test_num: '',
+    test_num: ['', ''],
     material: '',
-    date: '',
+    date: ['', ''],
     test_type: '',
     resin_type: '',
+    resin_matrix: '',
     mfg_method: '',
-    layup: '',
+    layup: [''],
     core_type: '',
   });
   const canResetAdvancedSearch = Object.values(advancedSearch).some(value => value !== '');
@@ -142,19 +147,31 @@ function App() {
   const stopPropagation = (e) => { e.stopPropagation(); };
 
   const handleAdvancedChange = (key, value) => {
-    if (value.toLowerCase() === 'any') value = '';
+    const isArrayValue = Array.isArray(advancedSearch[key]);
+
+    if (isArrayValue && !Array.isArray(value)) {
+      value = [value];
+    } else if (isArrayValue && Array.isArray(value)) {
+      const canAddEntries = ADVANCED_SEARCH_DATATYPES[key].canAddEntries;
+      if (!canAddEntries) { // ensure the value array does not exceed the original length
+        value = value.slice(0, advancedSearch[key].length);
+      } 
+    }
+
+    if (!isArrayValue && value.toLowerCase() === 'any') value = '';
     setAdvancedSearch((prev) => ({ ...prev, [key]: value }));
   };
 
   const clearAdvancedSearch = () => {
     setAdvancedSearch({
-      test_num: '',
+      test_num: ['', ''],
       material: '',
-      date: '',
+      date: ['', ''],
       test_type: '',
       resin_type: '',
+      resin_matrix: '',
       mfg_method: '',
-      layup: '',
+      layup: [''],
       core_type: '',
     });
   };
@@ -173,9 +190,56 @@ function App() {
 
     for (const [key, value] of Object.entries(advancedSearch)) {
       if (value) {
-        filtered = filtered.filter((entry) =>
-          String(entry[key]).toLowerCase().includes(value.toLowerCase())
-        );
+        filtered = filtered.filter((entry) => {
+          if (key === 'date') {
+            const [start, end] = value;
+            const entryDate = new Date(entry[key]);
+            if (start && entryDate < new Date(start)) return false;
+            
+            const endDate = (new Date(end)).setDate((new Date(end)).getDate() + 1);
+            if (end && entryDate > endDate) return false;
+            return true;
+          } else if (key === 'test_num') {
+            const [min, max] = value;
+            const entryValue = Number(entry[key]);
+            if (min && entryValue < Number(min)) return false;
+            if (max && entryValue > Number(max)) return false;
+            return true;
+          } else if (key === 'layup') {
+            /* method where order doesnt matter (save for later maybe idk)
+            const entryLayers = String(entry[key]).toLowerCase();
+            for (const layer of value) {
+               if (!entryLayers.includes(layer.toLowerCase())) return false;
+            }
+            return true;
+            */
+            let layupIndex = 0;
+            for (let i = 0; i < entry[key].length; i++) {
+              layupIndex = 0;
+              for (let j = 0; j < value.length; j++) {
+                // if we've gone past the end of the entry's layup, break out of the loop
+                if (i + layupIndex >= entry[key].length) break;
+
+                const entryLayer = entry[key][i + layupIndex];
+                const queryLayer = value[j];
+
+                // when blank treat it as a match
+                if (queryLayer.toLowerCase() === '') { layupIndex++; continue; }
+
+                // if the entry layer includes the query layer, it matches
+                if (entryLayer.toLowerCase().includes(queryLayer.toLowerCase())) { layupIndex++; continue; };
+                break;
+              }
+              if (layupIndex === value.length) break;
+            }
+
+            // return true if all query layers matched in order 
+            // ex. 90, _, _ looks for layups that have 90 followed by any two layers 
+            // so like _, 90, _, _ would match
+            return layupIndex === value.length;
+          }
+          return String(entry[key]).toLowerCase().includes(value.toLowerCase());
+        });
       }
     }
 
@@ -188,8 +252,8 @@ function App() {
     <div className="app-content">
       <div className="overlay-container" style={{ display: overlayDisplay }} onClick={overlayClick}>
         <div className="overlay-contents" onClick={stopPropagation}>
-          {selectedId !== null && <InfoPage data={data} selectedId={selectedId} />}
-          {isFormOpen && <SubmitForm setIsFormOpen={setIsFormOpen} />}
+          {selectedId !== null && <InfoPage data={data} selectedId={selectedId} closeOverlay={overlayClick} />}
+          {isFormOpen && <SubmitForm setIsFormOpen={setIsFormOpen} closeOverlay={overlayClick} />}
         </div>
       </div>
       <header className="top-bar unselectable">
@@ -254,10 +318,9 @@ function App() {
               <div className="advanced-search-grid">
                 {Object.entries(ADVANCED_SEARCH_DATATYPES).map(([key, data]) => {
                   const name = data.name;
-                  let type = data.type;
-                  if (Array.isArray(data.type)) {
-                    let options = data.type;
-                    type = "dropdown";
+                  const type = data.type;
+                  if (type === 'select') {
+                    const options = Array.from(data.values);
 
                     return (
                       <label className="advanced-search-field" key={key}>
@@ -276,6 +339,63 @@ function App() {
                     );
                   }
                   
+                  if (Array.isArray(data.type)) {
+                    const isPlaceholderArray = Array.isArray(data.placeholder);
+                    let placeholder = isPlaceholderArray ? data.placeholder : Array(data.type.length).fill(data.placeholder || '');
+                    
+                    const canAddEntries = data.canAddEntries || false;
+                    let entries = data.type;
+                    if (canAddEntries) {
+                      entries = [...advancedSearch[key]];
+                      placeholder = Array(entries.length).fill(data.placeholder || '');
+                    }
+
+                    return (
+                      <label className="advanced-search-field" key={key}>
+                        <span>{name}</span>
+                        {entries.map((subType, index) => (
+                          <input
+                            key={index}
+                            type={subType}
+                            value={advancedSearch[key][index] || ''}
+                            onChange={(e) => {
+                              const newValue = [...advancedSearch[key]];
+                              newValue[index] = e.target.value;
+                              handleAdvancedChange(key, newValue);
+                            }}
+                            placeholder={placeholder[index] || ''}
+                          />
+                        ))}
+                        {canAddEntries && (
+                          <div className="unselectable">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newValue = [...advancedSearch[key], ''];
+                                handleAdvancedChange(key, newValue);
+                              }}
+                              className="add-button"
+                            >
+                              Add
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (advancedSearch[key].length === 1) return;
+                                const newValue = [...advancedSearch[key]];
+                                newValue.pop();
+                                handleAdvancedChange(key, newValue);
+                              }}
+                              className={"remove-button" + (advancedSearch[key].length === 1 ? " disabled" : "")}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        )}
+                      </label>
+                    );
+                  }
+
                   return (
                     <label className="advanced-search-field" key={key}>
                       <span>{name}</span>

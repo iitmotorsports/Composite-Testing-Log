@@ -8,7 +8,9 @@
 
     box-sizing: border-box;
     width: 100%;
-    max-width: min(50vw, 1000px);
+    max-width: min(calc(100vw - 40px), 600px);
+
+    height: 90vh;
     max-height: 90vh;
     overflow-y: auto;
 
@@ -33,6 +35,25 @@
     margin: 0;
     font-size: 0.9rem;
     color: var(--ip-muted);
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.info-header .ip-close-btn {
+    flex: none;
+    padding: 8px 10px;
+    line-height: 1;
+    
+    font-weight: 600;
+    background-color: transparent;
+    border: 1px solid var(--ip-border-strong);
+    border-radius: var(--ip-radius);
+    cursor: pointer;
+    transition: background-color 0.15s ease, filter 0.15s ease, border-color 0.15s ease;
 }
 
 /* ---------- Results ---------- */
@@ -141,7 +162,7 @@
 /* ---------- Pictures ---------- */
 .info-pictures {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, min(220px, 1fr));
     gap: 8px;
 }
 
@@ -180,7 +201,6 @@
 @media (max-width: 480px) {
     .info-page {
         padding: 16px;
-        border-radius: 0;
         max-height: 100vh;
     }
 
