@@ -72,7 +72,7 @@ function EnumField({ label, options, state, onChange, required, emptyLabel }) {
   );
 }
 
-function SubmitForm({ setIsFormOpen, extraOptions = {} }) {
+function SubmitForm({ setIsFormOpen, extraOptions = {}, closeOverlay }) {
   const [f, setF] = useState(initialState);
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [message, setMessage] = useState('');
@@ -169,7 +169,12 @@ function SubmitForm({ setIsFormOpen, extraOptions = {} }) {
 
   return (
     <div className="submit-form">
-      <h2>Submit Test</h2>
+      <div className="sf-header-spacer">
+        <h2>Submit Test</h2>
+        <button type="button" className="sf-icon-btn" onClick={() => { closeOverlay(); }} aria-label={`Close form`}>
+          ✕
+        </button>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div className="sf-grid-2">

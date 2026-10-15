@@ -5,10 +5,14 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
+    font-size: 10px; /* min font size for small screens */
+
     /* additions */
     box-sizing: border-box;
     width: 100%;
-    max-width: 560px;
+    max-width: min(560px, calc(100vw - 40px));
+
+    height: min(90vh, 100%);
     max-height: 90vh;
     overflow-y: auto;
 
@@ -20,12 +24,35 @@
     --sf-accent-contrast: var(--primary-contrast, #ffffff);
     --sf-border: color-mix(in srgb, currentColor 25%, transparent);
     --sf-border-strong: color-mix(in srgb, currentColor 45%, transparent);
-    --sf-field-bg: color-mix(in srgb, currentColor 5%, transparent);
+    --sf-field-bg: var(--bg-3); /*color-mix(in srgb, currentColor 5%, transparent);*/
     --sf-radius: 6px;
+
+    --sf-font-size: 0.75rem; /* min font size for small screens */
+}
+
+@media (min-width: 350px) {
+    .submit-form {
+        font-size: 12px;
+        --sf-font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 430px) {
+    .submit-form {
+        font-size: inherit;
+        --sf-font-size: 0.85rem; /* increase font size for larger screens */
+    }
+}
+
+.submit-form .sf-header-spacer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
 .submit-form h2 {
-    margin: 0 0 16px;
+    margin: 0;
     font-size: 1.4rem;
     line-height: 1.2;
 }
@@ -94,7 +121,7 @@
     padding: 10px;
     font: inherit;
     font-weight: 400;
-    font-size: 0.85rem;
+    font-size: var(--sf-font-size);
     color: inherit;
     background-color: var(--sf-field-bg);
     border: 1px dashed var(--sf-border-strong);
@@ -276,7 +303,7 @@
     flex: none;
     width: 1.5em;
     text-align: right;
-    font-size: 0.85rem;
+    font-size: var(--sf-font-size);
     opacity: 0.6;
 }
 
@@ -289,7 +316,7 @@
 .submit-form .sf-add-btn {
     justify-self: start;
     padding: 6px 12px;
-    font-size: 0.85rem;
+    font-size: var(--sf-font-size);
     border-style: dashed;
 }
 
